@@ -1,4 +1,4 @@
-*Este proyecto ha sido creado  como parte del currículo de 42 por [alcristo]([githun](https://github.com/alcristo))*
+*Este proyecto ha sido creado  como parte del currículo de 42 por [alcristo](https://github.com/alcristo)*
 
 # ft_printf
 
