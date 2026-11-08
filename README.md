@@ -1,83 +1,106 @@
-*Este proyecto ha sido creado  como parte del currículo de 42 por [alcristo](https://github.com/alcristo)*
+*This project has been created as part of the 42 curriculum by [alcristo](https://github.com/alcristo)*
 
 # ft_printf
 
-## Descripción
+## Description
 
-Este proyecto trata de imitar la función "printf" de C con el fin de imprimir caracteres de forma eficiente. Sin embargo, únicamente soporta caracteres, cadenas de carcteres, punteros y direcciones de memoria, y números enteros, enteros sin signo y hexadecimales. No se ha añadido la función de escribir números de punto flotante, así como números en formato <i>long</i> y de tamaño superior en formato decimal.
+This project attempts to imitate C's `printf` function in order to print characters efficiently. However, it only supports characters, strings, pointers and memory addresses and signed, unsigned and hexadecimal integers. Floats were added for `push_swap`; longs were not.
 
-Esta función es variádica. Esto significa que toma como variables de entrada una cadena de caracteres, a la que denominaremos *format* y un número indeterminado de variables (argumentos) en múltiples formatos. El tipo de formato es determinado por el caracter '%' en *format* seguido de uno de los caracteres "cspdiuxX%".
+This is a variadic function: the function accepts as arguments a string (the `format` string) an undefined number of arguments in many formats. The format type is determined by the `%` character followed y one of the set `cspdiuxX%`.
 
-La función imprime la cadena *format* junto con los argumentos en el orden establecido. Además, devuelve como valor de salida el número de caracteres que ha imprimido. Si detecta un problema, devuelve como valor -1.
+The function prints `format` along with the arguments in the established order and returns the number of printed characters, or `-1` if an issue arised.
 
-Es posible variar el formato con *flags*, así como una anchura mínima y una precisión.
+Format variation is possible with flags.
 
-## Instrucciones
+## Instructions
 
 ### Compilación
 
-Para compilar la librería únicamente es necesario escribir el comando make en la raíz del directorio en el que se encuentre el Makefile. Dicho Makefile posee las reglas all, clean, fclean y re, las cuales crean la librería, borran los objetos temporales, hace la regla clean y elimina también la librería, y ejecuta all tras fclean respectivamente. El resultado final será una librería denominada *libft.a*.
+This project has a Makefile with the following rules:
 
-### Ejecución
+| Rule | Description |
+| - | - |
+| all | Compile the library `libftprintf.a` |
+| clean | Remove temporary objects |
+| fclean | Remove temporary objects and the library |
+| re | Remove temporary objects and the library, then compile again |
 
-Para ejecutar un programa .c con la función ft\_printf es necesario incluir la cabecera "ft\_printf.h" al principio de dicho programa. Para que compile únicamente será necesario escribir en el terminal
+To compile the library, execute in terminal:
 
 ```bash
-cc [*.c] libftprintf.a
+make
+```
+
+To compile .c files with `ft_printf` include the `ft_printf,h` header and execute in terminal:
+
+```bash
+cc [files.c] libftprintf.a
 ```
 
 ### Funcionamiento
 
-Para usar ft_printf es necesario seguir el formato
+To use `ft_printf` in a C file, follow the format:
 
-```vim
+```c
 ft_printf(char *format, ...)
 ```
 
-Para escribir un argumento se debe escribir en el formato un caracter '%' seguido de un identificador. Estos pueden ser:
-- %c: escribe un caracter.
-- %s: escribe una cadena de caracteres.
-- %p: escribe un puntero en formato hexadecimal.
-- %d y %i: escriben un número entero (formato *int*). No existe ninguna diferencia entre ambos.
-- %u: escribe un número entero  sin signo.
-- %x y %X: escriben un número hexadecimal desde su forma decimal. Ponen los dígitos abcdef en minúscula y mayúscula respectivamente.
-- %%: escribe simplemente un símbolo de porcentaje. No requiere argumento.
-- %f: no era necesario para el currículo de 42. Escribe un número de precisión doble. En este caso, la precisión indica el número de decimales que se tienen que imprimir. Este valor está por defecto fijado en 6.
+To write an argument, write one of the following format identifiers:
+
+| Format identifier | Description |
+| - | - |
+| `%c` | Write a character |
+| `%s` | Write a string |
+| `%p` | Write a pointer's memory address in hexadecimal notation |
+| `%d` | Write an integer |
+| `%i` | Write an integer |
+| `%u` | Write an unsigned integer |
+| `%x` | Write an hexadecimal integer with lowercase letters |
+| `%X` | Write an hexadecimal integer with lowercase letters |
+| `%%` | Write a percentage sign |
+| `%f` | Write a floating point number. Not required by the subject. Default precision is 6 decimals |
+
+Alternatively, flags can be used, and the minimum width and precision may be defined. If `a` is any format identifier, 
 
 Alternativamente se pueden usar flags y definir la anchura mínima y la precisión. Para ello se debe indicar entre el '%' y cualquier identificador 'a'. Siempre deben tener el siguiente orden:
-```vim
-ft_printf("%[flags][anchura].[precisión]/[descriptor  de archivos]a"/, ...)
+
+```c
+ft_printf("%[flags][width].[precision]/[file_descriptor]a", ...)
 ```
-- Flags: cambian el formato del argumento. La función ft_printf tiene cinco flags:
-  - -: En vez de añadir espacios a la izquierda los añade a la derecha. Tiene prioridad sobre la flag '0'.
-  - 0: Sustituye los espacios por ceros. No funciona si la precisión está definida.
-  - #: Imprime una versión alternativa. Sólo funciona con los identificadores %x y %X, añadiendo los caracteres "0x" y "0X" respectivamente.
-  - +: Funciona con los identificadores %d, %i y %p. Añade un símbolo '+' a los números positivos con el fin de justificarlos con los negativos. Tiene prioridad sobre la flag ' '.
-  - Espacio: Lo mismo que '+', pero añade un espacio.
-- Anchura mínima: se define como el número mínimo de caracteres que deben imprimirse. Si no existen flags añade espacios a la izquierda. Para el identificador %% siempre será igual a 1.
-- Precisión: al imprimir números indica el número de dígitos que se han de escribir. Debe empezar antes de un punto. Si es mayor que las cifras del número añadirá ceros a la izquierda.
-- Descriptor de archivos: una función personalizada. Indica en qué descriptor de archivos se tienen que escribir los caracteres. Ideal para ponerlo en la salida de errores estándar indicándose como 2.
 
-## Algoritmo
+The minimum width is the minimum number of characters that must be printed. Adds spaces to the left if no flags say the opposite. It's always `1` for `%%`.
 
-El algoritmo utilizado fue el siguiente:
+Precision marks the number of digits that must be written. Must be defined after a `.` character. If greater than the number of digits, printing will add zeros to the left.
 
-Empieza protegiendo la función contra formato nulo. Luego va iterando sobre el formato escribiéndolo. Si detecta un % buscará flags. Si no las detecta ejecutará un algoritmo de impresión simple para no reservar memoria para las flags. Si ve que el número de caracteres imprimidos es en algún momento -1, deja de iterar y devuelve -1. Si no, va sumando el número de caracteres mientras los imprime.
+The file descrptor was implemented for `push_swap`; it wasn't required by the subject and is not in the original `printf` function.
 
-Si en algún momento detecta una flag pasa a un algoritmo de impresión más complejo. Empieza reservando memoria para una estructura de 7 números enteros: 5 para las flags, una para la anchura mínima y otra para la precisión. Primero asigna un cero a cada flag y les va asignando 1 a medida que las encuentra. Después asigna la anchura mínima y la precisión, siendo 0 y -1 respectivamente en caso de que no las encuentre. Esta precisión negativa será importante porque si es cero y la flag '0' está activada no se imprimirán ceros, sino espacios. Cuando ha terminado, aplica el algoritmo de impresión complejo. Finalmente, libera la memoria de la estructura.
+There are 5 possible flags:
 
-En el algoritmo complejo, primero cuenta el número de caracteres que normalmente imprimiría el simple. Luego añade espacios a la izquierda si no está marcada la flag '-'. Este proceso normalmente tiene su función. Después añade el argumento. Finalmente, si se marca la flag '-' resta el número de caracteres imprimidos durante el proceso a la anchura y añade espacios hasta que la anchura sea cero.
+| Flag | Description |
+| - | - |
+| `-` | Adds space padding to the left. Has priority over `0` |
+| `0` | Replaces space padding with zeros |
+| `#` | Prints alternative version for hexadecimal numbers, adding `0x` or `oX` to the left |
+| `+` | For pointers and signed and unsigned integers, justify positive numbers with a `+` sign. Has priority over ` `  |
 
-La impresión a la izquierda requiere comparar la precisión y la anchura. Si la primera es mayor que la segunda imprime el signo si lo hay y los ceros. Si no lo es se mira si la bandera '-' está marcada. Si lo está imprime los ceros y el signo, imprimiendo los espacios tras el argumento. Si no, mira si la precisión es negativa y la bandera '0' está marcada. Si ambas condiciones se cumplen imprime el signo y los ceros. De lo contrario imprime un número de espacios hasta anchura llega al número de caracteres a imprimir más el signo.
+## Algorithm
 
-Antes de imprimir los ceros imprime primero el signo, ya sea +, -, espacio o 0x. Luego mira si la condición del párrafo anterior. Si se cumple añade ceros hasta que la anchura pasa a ser el número de caracteres a imprimir. Si no, hace lo mismo pero con la precisión.
+First, the function iterates over the format string (protected against `NULL`), writing it. If a `%` character is detected, it will search for flags. If no flags, the function will execute a simple printing algorithm depending on the format. If the number of printed characters is in any moment `-1`, printing will stop and returns `-1`. Else it adds the number of printed characters as they get printed.
 
-## Recursos
+If a flag is detected, the function allocates memory for a structure with 7 integers: 5 for the flags and other 2 for the width and precision. First, a zero is set for every flag and assigns 1 for each one if found. Then, the width and precision are set to `0` and `-1` respectively. If precision and flag `0` is active, spaces will be printed instead of zeros. After parsing flags, a more complex algorithm is applied. Finally, the structure memory is freed.
 
-La página web https://es.cppreference.com/c/variadic me ayudó a comprender qué era una función variádica.
+This complex algorithm will first count the number of characters that the simple algorithm would print. Then spaces will be added as padding if `-` is not active, a process that has its own function depending on the flags. Next the argument is printed. Finally adds a right padding if `-` is active.
 
-Para entender sobre el funcionamiento de la función printf se ha investigado su apartado en W3Schools (https://www.w3schools.com/c/ref_stdio_printf.php).
+Left padding requires comparing width ($w$) and precision ($p$). If $w>p$ the sign and zeros are printed. Else, the function will check for the `-` flag. If marked, the sign and zeros are printed, else spaces are printed until the padding is satisfied. If `0` flag is active the sign is printed first (`+`, `-`, ` ` or `0x`) and then checks for the previously described condition to print zeros depending on the width and the precision.
 
-Para realizar pruebas se usó la francinette (https://github.com/WaRtr0/francinette-image).
+## Resources
 
-No se ha utilizado inteligencia artficial para este proyecto.
+[This web page](https://es.cppreference.com/c/variadic) Heped me understand what a variadic function was.
+
+[W3Schools page for `printf`](https://www.w3schools.com/c/ref_stdio_printf.php) was used to understand how the `printf` flags worked.
+
+[Francinette](https://github.com/WaRtr0/francinette-image) was used for testing.
+
+### AI Usage
+
+AI wasn't used for this project.
